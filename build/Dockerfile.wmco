@@ -49,8 +49,11 @@ COPY --from=build /tmp/windows-instance-config-daemon.exe.tar.gz /payload/window
 COPY --from=build /tmp/wicd.sha256sum /tmp/wicd.sha256sum
 RUN cat /tmp/wicd.sha256sum >> /payload/sha256sum
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+FROM registry.redhat.io/ubi9/ubi-minimal-pqc:latest@sha256:72187ec58a94bd958ff48e41881d7c5d8bc0b49586cc1661da5ba4d92374c206
 LABEL stage=operator
+
+RUN cat /etc/crypto-policies/state/current && \
+    test "$(cat /etc/crypto-policies/state/current)" = "DEFAULT:PQ"
 
 # This block contains standard Red Hat container labels
 LABEL name="openshift4-wincw/windows-machine-config-rhel9-operator" \
